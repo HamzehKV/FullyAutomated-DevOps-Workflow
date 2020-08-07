@@ -24,7 +24,7 @@ stages:
               displayName: Build an Image
               inputs:
                 containerRegistry: "hmzkv88 Dockerhub"
-                repository: "hmzkv88/weatherapi"
+                repository: "hmzkv88/weatherapi:${tag}"
                 command: "buildAndPush"
                 Dockerfile: "**/Dockerfile"
                 tags: |
