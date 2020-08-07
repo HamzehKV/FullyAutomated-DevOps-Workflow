@@ -33,7 +33,8 @@ resource "azurerm_container_group" "tfcg_weatherapi" {
   os_type         = "linux"
   container {
     name   = "weatherapi"
-    image  = "hmzkv88/weatherapi:${var.imagebuild}"
+    # image  = "hmzkv88/weatherapi:${var.imagebuild}"
+    image  = "hmzkv88/weatherapi"
     cpu    = "1"
     memory = "1"
     ports {
