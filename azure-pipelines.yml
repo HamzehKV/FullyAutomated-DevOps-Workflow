@@ -3,50 +3,51 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/docker
 
 trigger:
-    - master
+  - master
 
 resources:
-    - repo: self
+  - repo: self
 
 variables:
-    tag: "$(Build.BuildId)"
+  tag: "$(Build.BuildId)"
 
 stages:
-- stage: Build
-    displayName: Build image
+  - stage: Build
+    displayName: Build Image Stage
     jobs:
-    - job: Build
-        displayName: Build
+      - job: Build
+        displayName: Build Image Job
         pool:
-            vmImage: "ubuntu-latest"
-        steps:
-        - task: Docker@2
-            inputs:
+          vmImage: "ubuntu-latest"
+          steps:
+            - task: Docker@2
+              displayName: Build an Image
+              inputs:
                 containerRegistry: "hmzkv88 Dockerhub"
                 repository: "hmzkv88/weatherapi"
                 command: "buildAndPush"
                 Dockerfile: "**/Dockerfile"
                 tags: |
-                    $(tag)
-- stage: Provision
+                  $(tag)
+  - stage: Provision
     displayName: "Terraform provisioning on Azure..."
     dependsOn: Build
     jobs:
-    - job: Provision
+      - job: Provision
         displayName: "Provisioning Container Instances"
         pool:
-            vmImage: "ubuntu-latest"
+          vmImage: "ubuntu-latest"
         variables:
-        - group: VG_TerraformServicePrincipal
+          - group: VG_TerraformServicePrincipal
         steps:
-        - script: | 
-            set -e
-            terraform init -input=false
-            terraform apply -input=false -auto-approve
-        name: 'RunTerraform'
-        displayName: 'Run Terraform'
-        env:
-            ARM_CLIENT_ID: $(ARM_CLIENT_ID)
-            ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
-            ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
-            ARM_TENANT_ID: $(ARM_TENANT_ID)  
+          - script: |
+              set -e
+              terraform init -input=false
+              terraform apply -input=false -auto-approve
+            name: "RunTerraform"
+            displayName: "Run Terraform"
+            env:
+              ARM_CLIENT_ID: $(ARM_CLIENT_ID)
+              ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
+              ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
+              ARM_TENANT_ID: $(ARM_TENANT_ID)
