@@ -13,22 +13,21 @@ variables:
 
 stages:
   - stage: Build
-    displayName: Build Image Stage
+    displayName: Build image
     jobs:
       - job: Build
-        displayName: Build Image Job
+        displayName: Build
         pool:
           vmImage: "ubuntu-latest"
-          steps:
-            - task: Docker@2
-              displayName: Build an Image
-              inputs:
-                containerRegistry: "hmzkv88 Dockerhub"
-                repository: "hmzkv88/weatherapi:${tag}"
-                command: "buildAndPush"
-                Dockerfile: "**/Dockerfile"
-                tags: |
-                  $(tag)
+        steps:
+          - task: Docker@2
+            inputs:
+              containerRegistry: "hmzkv88 Dockerhub"
+              repository: "hmzkv88/weatherapi"
+              command: "buildAndPush"
+              Dockerfile: "**/Dockerfile"
+              tags: |
+                $(tag)
   - stage: Provision
     displayName: "Terraform provisioning on Azure..."
     dependsOn: Build
@@ -48,8 +47,8 @@ stages:
             name: "RunTerraform"
             displayName: "Run Terraform"
             env:
-              TF_VAR_imagebuild: $(tag)
               ARM_CLIENT_ID: $(ARM_CLIENT_ID)
-              ARM_TENANT_ID: $(ARM_TENANT_ID)
               ARM_CLIENT_SECRET: $(ARM_CLIENT_SECRET)
+              ARM_TENANT_ID: $(ARM_TENANT_ID)
               ARM_SUBSCRIPTION_ID: $(ARM_SUBSCRIPTION_ID)
+              TF_VAR_imagebuild: $(tag)
