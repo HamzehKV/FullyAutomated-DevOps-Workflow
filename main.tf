@@ -12,6 +12,12 @@ terraform {
   }
 }
 
+variable "imageBuild" {
+  type        = string
+  description = ":Latest Image Build"
+}
+
+
 resource "azurerm_resource_group" "tfrg_weatherapi" {
   name     = "TFRG_weatherapi"
   location = "westeurope"
@@ -27,7 +33,7 @@ resource "azurerm_container_group" "tfcg_weatherapi" {
   os_type         = "linux"
   container {
     name   = "weatherapi"
-    image  = "hmzkv88/weatherapi"
+    image  = "hmzkv88/weatherapi:${var.imageBuild}"
     cpu    = "1"
     memory = "1"
     ports {
