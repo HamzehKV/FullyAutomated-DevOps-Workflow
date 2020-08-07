@@ -14,7 +14,7 @@ terraform {
 
 variable "imageBuild" {
   type        = string
-  description = ":Latest Image Build"
+  description = "Latest Image Build"
 }
 
 
